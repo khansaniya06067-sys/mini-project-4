@@ -1,0 +1,99 @@
+Details={}
+def student_record(std_id,name,marks):
+    Details[std_id] = {'name':name,'marks':marks}
+    return dict(Details)
+def AddRecord():
+    num = int(input("enter number of student: "))
+    student_ids = []
+    for i in range(num):
+        std_id=input("\nstudent id: ")
+        student_ids.append(std_id)
+        
+        name=input("enter name: ")
+        
+        num_sub = int(input("enter number of subjects: "))
+        marks = []
+        for num in range(num_sub):
+            mark = int(input("enter marks: "))
+            while True:
+                if 0 <= mark <= 100:
+                    break
+                else:
+                    mark = int(input("invalid marks please re-enter mark: "))
+            marks.append(mark)
+        Details = student_record(std_id,name,marks)
+    return Details
+def calc_total(marks):
+    return sum(marks)
+def calc_avg(marks):
+    return sum(marks)/len(marks)
+def get_grade(average):
+    if average >= 75:
+        result = "Distinction"
+    elif average >= 60:
+        result = "First Division"
+    elif average >= 40:
+        result = "Pass"
+    else:
+        result = "Fail"
+    return result
+def get_top_performer(records,minimum=75):
+    top_performer = []
+    for Detail in Details.values():
+        marks = Detail['marks']
+        average = sum(marks)/len(marks)
+        if average >= minimum:
+            top_performer.append(Detail['name'])
+    return top_performer
+
+def std_record():
+    for std_id,Detail in Details.items():
+        print(f"\n{std_id} | name:{Detail['name']} | marks:{Detail['marks']}")
+        marks = Detail['marks']
+        total = calc_total(marks)
+        avg = calc_avg(marks)
+        grade = get_grade(avg)
+        print(f"total: {total} | average: {avg} | grade: {grade}")
+
+def class_average(Details):
+    averages = list(map(lambda student: calc_avg(student['marks']),Details.values()))
+    class_avg = sum(averages)/len(averages)
+    print(f"Class average: {class_avg}")
+
+def get_high_performer(Details):
+    high_performer_std = list(filter(lambda student: calc_avg(student['marks']) >= 75,Details.values()))
+    high_performer = list(map(lambda student: student['name'],high_performer_std))
+    print(f"High performers (Average >= 75): {high_performer}")
+
+def average_by_args(*args):
+    average = sum(args)/len(args)
+    return average
+
+def recursive_sum(n):
+    if n <= 0:
+        return 0
+    return n + recursive_sum(n-1)
+
+def print_scope():
+    message = "this is local variable"
+    print(message)
+
+Details = AddRecord()
+std_record()
+print()
+
+get_high_performer(Details)
+class_average(Details)
+print()
+avg = average_by_args(20,36,40,15)
+print("average using positional argument: ",avg)
+
+avg = calc_avg(marks = [20,36,40,15])
+print("Average using keyword argument: ",avg)
+top_Student = get_top_performer(Details)
+print(f"top performer by default argument of minimum: {top_Student}")
+
+print()
+print("recursive sum from 1 to 5",recursive_sum(5))
+print()
+print_scope()
